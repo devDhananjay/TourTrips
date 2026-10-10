@@ -2,45 +2,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
+import type { HomeExperience } from "@/lib/site-settings";
 
-const experiences = [
-  {
-    id: "culture",
-    tag: "Culture",
-    title: "Immerse yourself in culture",
-    href: "/packages?destination=rajasthan",
-    image:
-      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&q=80",
-  },
-  {
-    id: "adventure",
-    tag: "Adventure",
-    title: "Chase your next adventure",
-    href: "/packages?tripType=adventure",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
-  },
-  {
-    id: "relaxation",
-    tag: "Relaxation",
-    title: "Unwind in style",
-    href: "/packages?tripType=leisure",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
-  },
-];
-
-export default function ThingsToDo() {
+export default function ThingsToDo({
+  eyebrow,
+  title,
+  items,
+}: {
+  eyebrow: string;
+  title: string;
+  items: HomeExperience[];
+}) {
   return (
     <section className="section-pad bg-white">
       <div className="container-page">
         <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand">
-              Experiences
+              {eyebrow}
             </p>
             <h2 className="mt-2 text-3xl text-foreground md:text-4xl">
-              Things to do
+              {title}
             </h2>
           </div>
           <Link
@@ -52,7 +34,7 @@ export default function ThingsToDo() {
         </Reveal>
 
         <div className="grid gap-5 md:grid-cols-3">
-          {experiences.map((item, index) => (
+          {items.map((item, index) => (
             <Reveal key={item.id} delay={index * 100}>
               <Link
                 href={item.href}

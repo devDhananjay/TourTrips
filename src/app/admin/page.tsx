@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getSiteSettings } from "@/lib/site-settings";
 import AdminClient from "./AdminClient";
 
 export const dynamic = "force-dynamic";
@@ -11,8 +12,8 @@ export default async function AdminPage() {
   if (!session) redirect("/login?next=/admin");
   if (session.role !== "SUPERADMIN") redirect("/account");
 
-  const [destinations, packages, users, favCount, planCount] = await Promise.all(
-    [
+  const [destinations, packages, users, favCount, planCount, siteSettings] =
+    await Promise.all([
       prisma.destination.findMany({
         orderBy: { updatedAt: "desc" },
         include: { _count: { select: { packages: true } } },
@@ -34,8 +35,8 @@ export default async function AdminPage() {
       }),
       prisma.favorite.count(),
       prisma.savedPlan.count(),
-    ],
-  );
+      getSiteSettings(),
+    ]);
 
   return (
     <div className="min-h-screen bg-[#f4f6f9]">
@@ -133,6 +134,7 @@ export default async function AdminPage() {
             savedPlans: u._count.savedPlans,
             pastTrips: u._count.pastTrips,
           }))}
+          siteSettings={siteSettings}
         />
       </div>
     </div>

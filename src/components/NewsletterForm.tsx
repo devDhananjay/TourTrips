@@ -1,11 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { company } from "@/data/company";
 import { isValidEmail } from "@/lib/enquiry";
 import Button from "./Button";
+import { useSiteSettings } from "./SiteSettingsProvider";
 
 export default function NewsletterForm() {
+  const { company } = useSiteSettings();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -18,9 +19,11 @@ export default function NewsletterForm() {
       return;
     }
     setIsError(false);
-    const subject = encodeURIComponent("Subscribe me to Yogo Voyage updates");
+    const subject = encodeURIComponent(
+      `Subscribe me to ${company.name} updates`,
+    );
     const body = encodeURIComponent(
-      `Please add ${email.trim()} to the Yogo Voyage travel inspiration list.`,
+      `Please add ${email.trim()} to the ${company.name} travel inspiration list.`,
     );
     window.location.href = `mailto:${company.email}?subject=${subject}&body=${body}`;
     setMessage("Opening your email app to confirm subscription.");

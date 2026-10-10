@@ -81,9 +81,12 @@ export const seasonalDeals = [
   },
 ];
 
-export function whatsappLink(message?: string): string {
+export function whatsappLink(
+  message?: string,
+  whatsappNumber: string = company.whatsapp,
+): string {
   const text = encodeURIComponent(
     message || "Hi Yogo Voyage! I would like to enquire about a trip.",
   );
-  return `https://wa.me/${company.whatsapp}?text=${text}`;
+  return `https://wa.me/${whatsappNumber}?text=${text}`;
 }

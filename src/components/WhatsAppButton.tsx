@@ -2,10 +2,11 @@
 
 import { MessageCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { whatsappLink } from "@/data/company";
+import { useSiteSettings } from "./SiteSettingsProvider";
 
 export default function WhatsAppButton() {
   const pathname = usePathname();
+  const { whatsappLink } = useSiteSettings();
   if (pathname?.startsWith("/admin")) return null;
 
   return (

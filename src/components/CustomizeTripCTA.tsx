@@ -1,8 +1,17 @@
 import { MessageCircle, Sparkles } from "lucide-react";
 import Button from "@/components/Button";
-import { whatsappLink } from "@/data/company";
 
-export default function CustomizeTripCTA() {
+export default function CustomizeTripCTA({
+  eyebrow,
+  title,
+  body,
+  whatsappHref,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+  whatsappHref: string;
+}) {
   return (
     <section className="section-pad">
       <div className="container-page">
@@ -11,26 +20,17 @@ export default function CustomizeTripCTA() {
             <div>
               <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
                 <Sparkles className="h-3.5 w-3.5" />
-                Customize DIY
+                {eyebrow}
               </p>
-              <h2 className="mt-4 text-3xl md:text-4xl">
-                Build your own holiday — your dates, budget & pace
-              </h2>
-              <p className="mt-3 max-w-xl text-stone-200">
-                Tell us where you want to go, how many travellers and what
-                matters most. We craft a personal itinerary with hotels,
-                transfers and experiences — just like a DIY holiday planner,
-                with expert support.
-              </p>
+              <h2 className="mt-4 text-3xl md:text-4xl">{title}</h2>
+              <p className="mt-3 max-w-xl text-stone-200">{body}</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <Button href="/contact" size="lg" variant="accent">
                 Plan My Custom Trip
               </Button>
               <Button
-                href={whatsappLink(
-                  "Hi Yogo Voyage! I want to customise a DIY holiday package.",
-                )}
+                href={whatsappHref}
                 size="lg"
                 variant="outline"
                 target="_blank"

@@ -4,7 +4,12 @@ import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Button from "@/components/Button";
 import ContactForm from "@/components/ContactForm";
 import PageHero from "@/components/PageHero";
-import { company, whatsappLink } from "@/data/company";
+import {
+  buildWhatsappLink,
+  getSiteSettings,
+} from "@/lib/site-settings";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -12,7 +17,9 @@ export const metadata: Metadata = {
     "Contact Yogo Voyage for tour package enquiries, custom itineraries and booking support.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { company } = await getSiteSettings();
+
   return (
     <>
       <PageHero
@@ -61,7 +68,11 @@ export default function ContactPage() {
               </ul>
               <p className="mt-5 text-sm text-muted">{company.workingHours}</p>
               <Button
-                href={whatsappLink()}
+                href={buildWhatsappLink(
+                  company.whatsapp,
+                  undefined,
+                  company.name,
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-6 w-full"
@@ -74,7 +85,7 @@ export default function ContactPage() {
 
             <div className="overflow-hidden rounded-2xl border border-border">
               <iframe
-                title="Yogo Voyage office location map"
+                title={`${company.name} office location map`}
                 src="https://maps.google.com/maps?q=Connaught%20Place%20New%20Delhi&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 className="h-72 w-full"
                 loading="lazy"

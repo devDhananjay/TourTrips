@@ -12,9 +12,10 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { company, navLinks } from "@/data/company";
+import { navLinks } from "@/data/company";
 import { destinations } from "@/data/destinations";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "./SiteSettingsProvider";
 import Logo from "./Logo";
 import SiteSearch from "./SiteSearch";
 
@@ -66,6 +67,7 @@ const primaryNav = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { company } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);

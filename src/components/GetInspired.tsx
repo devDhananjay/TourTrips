@@ -2,45 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
+import type { HomeStory } from "@/lib/site-settings";
 
-const stories = [
-  {
-    id: "1",
-    tag: "Featured",
-    title: "Stay longer with special hotel deals",
-    href: "/services",
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
-    featured: true,
-  },
-  {
-    id: "2",
-    tag: "Culture",
-    title: "Explore royal Rajasthan trails",
-    href: "/packages?destination=rajasthan",
-    image:
-      "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=1200&q=80",
-  },
-  {
-    id: "3",
-    tag: "Dining",
-    title: "Taste Kerala’s coastal flavours",
-    href: "/packages?destination=kerala",
-    image:
-      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&q=80",
-  },
-  {
-    id: "4",
-    tag: "Family",
-    title: "Find unforgettable adventures for kids",
-    href: "/packages?tripType=family",
-    image:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80",
-  },
-];
+export default function GetInspired({
+  eyebrow,
+  title,
+  stories,
+}: {
+  eyebrow: string;
+  title: string;
+  stories: HomeStory[];
+}) {
+  const featured =
+    stories.find((s) => s.featured) || stories[0] || null;
+  const rest = stories.filter((s) => s.id !== featured?.id);
 
-export default function GetInspired() {
-  const [featured, ...rest] = stories;
+  if (!featured) return null;
 
   return (
     <section className="section-pad bg-white">
@@ -48,10 +25,10 @@ export default function GetInspired() {
         <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand">
-              Inspiration
+              {eyebrow}
             </p>
             <h2 className="mt-2 text-3xl text-foreground md:text-4xl">
-              Get inspired to explore
+              {title}
             </h2>
           </div>
           <Link

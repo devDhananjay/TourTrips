@@ -115,3 +115,24 @@ model PastTrip {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   package     Package? @relation(fields: [packageId], references: [id], onDelete: SetNull)
 }
+
+// Singleton row (id = "default") — company contact + homepage CMS JSON
+model SiteSettings {
+  id            String   @id @default("default")
+  name          String
+  tagline       String
+  description   String
+  phone         String
+  phoneRaw      String
+  email         String
+  whatsapp      String
+  address       String
+  workingHours  String
+  logo          String
+  logoMark      String
+  favicon       String
+  socialJson    String // { facebook, instagram, twitter, youtube }
+  homeJson      String // homepage sections, images, lists
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}

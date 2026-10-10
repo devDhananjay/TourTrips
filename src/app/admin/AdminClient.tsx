@@ -18,10 +18,13 @@ import {
   EyeOff,
   Star,
   Upload,
+  Home,
 } from "lucide-react";
 import Button from "@/components/Button";
 import { formatPrice } from "@/data/company";
 import { cn } from "@/lib/utils";
+import type { SiteSettingsData } from "@/lib/site-settings";
+import SiteSettingsEditor from "./SiteSettingsEditor";
 
 type DestinationRow = {
   id: string;
@@ -82,7 +85,13 @@ type UserRow = {
   pastTrips: number;
 };
 
-type Tab = "dashboard" | "destinations" | "packages" | "pricing" | "users";
+type Tab =
+  | "dashboard"
+  | "site"
+  | "destinations"
+  | "packages"
+  | "pricing"
+  | "users";
 
 const emptyDest = {
   id: "",
@@ -145,6 +154,7 @@ export default function AdminClient({
   destinations,
   packages,
   users,
+  siteSettings,
 }: {
   stats: {
     destinations: number;
@@ -158,6 +168,7 @@ export default function AdminClient({
   destinations: DestinationRow[];
   packages: PackageRow[];
   users: UserRow[];
+  siteSettings: SiteSettingsData;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("dashboard");
@@ -391,6 +402,7 @@ export default function AdminClient({
 
   const nav = [
     { id: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },
+    { id: "site" as const, label: "Home & Contact", icon: Home },
     { id: "destinations" as const, label: "Destinations", icon: MapPin },
     { id: "packages" as const, label: "Packages", icon: Package },
     { id: "pricing" as const, label: "Pricing", icon: IndianRupee },
@@ -478,6 +490,13 @@ export default function AdminClient({
                   >
                     Manage pricing
                   </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setTab("site")}
+                  >
+                    Edit home & contact
+                  </Button>
                 </div>
               </div>
               <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
@@ -500,7 +519,7 @@ export default function AdminClient({
           </div>
         ) : null}
 
-        {tab !== "dashboard" ? (
+        {tab !== "dashboard" && tab !== "site" ? (
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="relative min-w-[240px] flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
@@ -523,6 +542,8 @@ export default function AdminClient({
             ) : null}
           </div>
         ) : null}
+
+        {tab === "site" ? <SiteSettingsEditor initial={siteSettings} /> : null}
 
         {tab === "destinations" ? (
           <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">

@@ -4,9 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { company, navLinks } from "@/data/company";
+import { navLinks } from "@/data/company";
 import { destinations } from "@/data/destinations";
 import { services } from "@/data/services";
+import { useSiteSettings } from "./SiteSettingsProvider";
 
 function SocialIcon({
   href,
@@ -36,6 +37,7 @@ function SocialIcon({
 
 export default function Footer() {
   const pathname = usePathname();
+  const { company } = useSiteSettings();
   if (pathname?.startsWith("/admin")) return null;
 
   return (

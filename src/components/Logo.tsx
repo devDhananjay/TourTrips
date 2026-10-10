@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { company } from "@/data/company";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "./SiteSettingsProvider";
 
 type LogoProps = {
   className?: string;
@@ -29,6 +31,8 @@ export default function Logo({
   priority = false,
   markOnly = false,
 }: LogoProps) {
+  const { company } = useSiteSettings();
+
   if (markOnly) {
     const mark = markSizes[size];
     return (
@@ -42,7 +46,7 @@ export default function Logo({
           style={{ width: mark, height: mark }}
         >
           <Image
-            src="/logo-square.jpg"
+            src={company.logoMark || "/logo-square.jpg"}
             alt={`${company.name} logo`}
             width={mark}
             height={mark}

@@ -3,7 +3,9 @@ import { Montserrat } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
 import { company } from "@/data/company";
+import { getSiteSettings } from "@/lib/site-settings";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -11,6 +13,8 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   display: "swap",
 });
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://yogovoyage.com"),
@@ -47,20 +51,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteSettings = await getSiteSettings();
+
   return (
     <html lang="en">
       <body
         className={`${montserrat.variable} flex min-h-screen flex-col antialiased`}
       >
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <WhatsAppButton />
+        <SiteSettingsProvider value={siteSettings}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <WhatsAppButton />
+        </SiteSettingsProvider>
       </body>
     </html>
   );

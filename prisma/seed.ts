@@ -2,12 +2,36 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { destinations } from "../src/data/destinations";
 import { packages } from "../src/data/packages";
+import { defaultSiteSettings } from "../src/lib/site-settings";
 
 const prisma = new PrismaClient();
 
 async function main() {
   const adminHash = await bcrypt.hash("Admin@Yogo2026", 10);
   const userHash = await bcrypt.hash("User@Yogo2026", 10);
+
+  const site = defaultSiteSettings();
+  await prisma.siteSettings.upsert({
+    where: { id: "default" },
+    update: {},
+    create: {
+      id: "default",
+      name: site.company.name,
+      tagline: site.company.tagline,
+      description: site.company.description,
+      phone: site.company.phone,
+      phoneRaw: site.company.phoneRaw,
+      email: site.company.email,
+      whatsapp: site.company.whatsapp,
+      address: site.company.address,
+      workingHours: site.company.workingHours,
+      logo: site.company.logo,
+      logoMark: site.company.logoMark,
+      favicon: site.company.favicon,
+      socialJson: JSON.stringify(site.company.social),
+      homeJson: JSON.stringify(site.home),
+    },
+  });
 
   await prisma.user.upsert({
     where: { email: "admin@yogovoyage.com" },
