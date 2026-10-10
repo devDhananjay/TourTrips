@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# local admin uploads (keep folder via .gitkeep)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# nested service deps + local db
+**/node_modules/
+*.db
+*.db-journal
