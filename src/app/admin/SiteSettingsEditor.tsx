@@ -3,8 +3,21 @@
 import Image from "next/image";
 import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, Upload } from "lucide-react";
+import {
+  Building2,
+  CheckCircle2,
+  ImageIcon,
+  MessageSquareQuote,
+  Newspaper,
+  Plus,
+  Share2,
+  Sparkles,
+  Trash2,
+  Upload,
+  type LucideIcon,
+} from "lucide-react";
 import Button from "@/components/Button";
+import { cn } from "@/lib/utils";
 import type {
   HomeContent,
   HomeExperience,
@@ -20,6 +33,7 @@ function Field({
   textarea,
   type = "text",
   required,
+  hint,
 }: {
   label: string;
   value: string;
@@ -27,13 +41,20 @@ function Field({
   textarea?: boolean;
   type?: string;
   required?: boolean;
+  hint?: string;
 }) {
   return (
     <label className="block space-y-1.5 text-sm">
-      <span className="font-semibold text-foreground">{label}</span>
+      <span className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+          {label}
+          {required ? <span className="text-brand"> *</span> : null}
+        </span>
+        {hint ? <span className="text-[11px] font-medium text-slate-400">{hint}</span> : null}
+      </span>
       {textarea ? (
         <textarea
-          className="form-control min-h-[88px]"
+          className="admin-field min-h-[96px]"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required={required}
@@ -41,7 +62,7 @@ function Field({
       ) : (
         <input
           type={type}
-          className="form-control"
+          className="admin-field"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required={required}
@@ -84,14 +105,18 @@ function ImageField({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       <Field label={label} value={value} onChange={onChange} />
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-slate-200 bg-slate-50/80 p-3">
         {value ? (
-          <div className="relative h-16 w-24 overflow-hidden rounded-lg border border-border bg-surface">
+          <div className="relative h-16 w-24 overflow-hidden rounded-lg ring-1 ring-slate-200">
             <Image src={value} alt="" fill className="object-cover" sizes="96px" />
           </div>
-        ) : null}
+        ) : (
+          <div className="flex h-16 w-24 items-center justify-center rounded-lg bg-white text-slate-300 ring-1 ring-slate-200">
+            <ImageIcon className="h-5 w-5" />
+          </div>
+        )}
         <input
           ref={inputRef}
           type="file"
@@ -99,17 +124,20 @@ function ImageField({
           className="hidden"
           onChange={(e) => upload(e.target.files)}
         />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={uploading}
-          onClick={() => inputRef.current?.click()}
-        >
-          <Upload className="h-4 w-4" />
-          {uploading ? "Uploading..." : "Upload from computer"}
-        </Button>
-        <span className="text-xs text-muted">JPG / PNG / WEBP / GIF · max 5MB</span>
+        <div className="min-w-0 flex-1 space-y-1">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={uploading}
+            onClick={() => inputRef.current?.click()}
+            className="border-slate-200 bg-white"
+          >
+            <Upload className="h-4 w-4" />
+            {uploading ? "Uploading..." : "Upload from computer"}
+          </Button>
+          <p className="text-[11px] text-slate-400">JPG / PNG / WEBP / GIF · max 5MB</p>
+        </div>
       </div>
       {error ? <p className="text-xs font-medium text-red-600">{error}</p> : null}
     </div>
@@ -117,19 +145,59 @@ function ImageField({
 }
 
 function Section({
+  id,
   title,
+  description,
+  icon: Icon,
   children,
+  actions,
+  grid = true,
 }: {
+  id?: string;
   title: string;
+  description?: string;
+  icon?: LucideIcon;
   children: React.ReactNode;
+  actions?: React.ReactNode;
+  grid?: boolean;
 }) {
   return (
-    <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold text-foreground">{title}</h2>
-      <div className="grid gap-4 md:grid-cols-2">{children}</div>
+    <section
+      id={id}
+      className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_0_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(15,23,42,0.18)]"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 via-white to-brand-soft/40 px-5 py-4">
+        <div className="flex min-w-0 items-start gap-3">
+          {Icon ? (
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white shadow-sm shadow-brand/25">
+              <Icon className="h-4 w-4" />
+            </span>
+          ) : null}
+          <div className="min-w-0">
+            <h2 className="text-base font-bold tracking-tight text-slate-900">{title}</h2>
+            {description ? (
+              <p className="mt-0.5 text-sm text-slate-500">{description}</p>
+            ) : null}
+          </div>
+        </div>
+        {actions}
+      </div>
+      <div className={cn("p-5", grid ? "grid gap-4 md:grid-cols-2" : "space-y-4")}>
+        {children}
+      </div>
     </section>
   );
 }
+
+const JUMP_LINKS = [
+  { id: "brand", label: "Brand" },
+  { id: "logos", label: "Logos" },
+  { id: "social", label: "Social" },
+  { id: "hero", label: "Hero" },
+  { id: "sections", label: "Sections" },
+  { id: "stories", label: "Stories" },
+  { id: "reviews", label: "Reviews" },
+] as const;
 
 export default function SiteSettingsEditor({
   initial,
@@ -192,28 +260,60 @@ export default function SiteSettingsEditor({
   }
 
   return (
-    <form onSubmit={onSave} className="space-y-5">
+    <form onSubmit={onSave} className="relative space-y-5 pb-24">
       {toast ? (
-        <div className="rounded-xl border border-brand/20 bg-brand-soft px-4 py-3 text-sm font-medium text-brand">
+        <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 shadow-sm">
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
           {toast}
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-            Homepage CMS
-          </p>
-          <p className="text-sm text-muted">
-            Edit contact, social, copy & images. Changes show live on the website.
-          </p>
+      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-[#0f274d] text-white shadow-[0_18px_40px_-24px_rgba(15,39,77,0.65)]">
+        <div className="relative px-5 py-5 md:px-6 md:py-6">
+          <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-sky-400/15 blur-2xl" />
+          <div className="pointer-events-none absolute bottom-0 left-1/3 h-28 w-28 rounded-full bg-amber-300/10 blur-2xl" />
+          <div className="relative flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-xl">
+              <p className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-sky-100">
+                <Sparkles className="h-3.5 w-3.5" />
+                Homepage CMS
+              </p>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight md:text-[1.7rem]">
+                Shape what travellers see first
+              </h2>
+              <p className="mt-1.5 text-sm text-slate-300">
+                Contact, social, copy and images — edits go live on the website
+                after you save.
+              </p>
+            </div>
+            <Button
+              type="submit"
+              disabled={saving}
+              className="bg-white text-brand hover:bg-sky-50"
+            >
+              {saving ? "Saving..." : "Save all changes"}
+            </Button>
+          </div>
+          <div className="relative mt-5 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {JUMP_LINKS.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                className="shrink-0 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
         </div>
-        <Button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save all changes"}
-        </Button>
       </div>
 
-      <Section title="Brand & contact">
+      <Section
+        id="brand"
+        title="Brand & contact"
+        description="Phone, email, WhatsApp and office details shown across the site."
+        icon={Building2}
+      >
         <Field
           label="Brand name"
           value={company.name}
@@ -240,12 +340,14 @@ export default function SiteSettingsEditor({
           value={company.phone}
           onChange={(v) => setCompanyField("phone", v)}
           required
+          hint="Shown in header"
         />
         <Field
           label="Phone (tel link digits)"
           value={company.phoneRaw}
           onChange={(v) => setCompanyField("phoneRaw", v)}
           required
+          hint="Digits only"
         />
         <Field
           label="Email"
@@ -255,10 +357,11 @@ export default function SiteSettingsEditor({
           required
         />
         <Field
-          label="WhatsApp number (country code, no +)"
+          label="WhatsApp number"
           value={company.whatsapp}
           onChange={(v) => setCompanyField("whatsapp", v)}
           required
+          hint="Country code, no +"
         />
         <div className="md:col-span-2">
           <Field
@@ -277,7 +380,12 @@ export default function SiteSettingsEditor({
         />
       </Section>
 
-      <Section title="Logos & brand images">
+      <Section
+        id="logos"
+        title="Logos & brand images"
+        description="Upload from your computer or paste an image URL."
+        icon={ImageIcon}
+      >
         <ImageField
           label="Logo URL"
           value={company.logo}
@@ -295,7 +403,12 @@ export default function SiteSettingsEditor({
         />
       </Section>
 
-      <Section title="Social media">
+      <Section
+        id="social"
+        title="Social media"
+        description="Footer and share destination links."
+        icon={Share2}
+      >
         <Field
           label="Facebook URL"
           value={company.social.facebook}
@@ -318,7 +431,12 @@ export default function SiteSettingsEditor({
         />
       </Section>
 
-      <Section title="Home hero">
+      <Section
+        id="hero"
+        title="Home hero"
+        description="Full-bleed image behind the search panel."
+        icon={ImageIcon}
+      >
         <ImageField
           label="Hero background image"
           value={home.hero.image}
@@ -335,9 +453,14 @@ export default function SiteSettingsEditor({
         />
       </Section>
 
-      <Section title="International destinations section">
+      <Section
+        id="sections"
+        title="Destination section copy"
+        description="Headlines for International and India blocks."
+        icon={Newspaper}
+      >
         <Field
-          label="Eyebrow"
+          label="International eyebrow"
           value={home.international.eyebrow}
           onChange={(v) =>
             setHome((p) => ({
@@ -347,7 +470,7 @@ export default function SiteSettingsEditor({
           }
         />
         <Field
-          label="Title"
+          label="International title"
           value={home.international.title}
           onChange={(v) =>
             setHome((p) => ({
@@ -358,7 +481,7 @@ export default function SiteSettingsEditor({
         />
         <div className="md:col-span-2">
           <Field
-            label="Description"
+            label="International description"
             value={home.international.description}
             onChange={(v) =>
               setHome((p) => ({
@@ -369,18 +492,15 @@ export default function SiteSettingsEditor({
             textarea
           />
         </div>
-      </Section>
-
-      <Section title="India destinations section">
         <Field
-          label="Eyebrow"
+          label="India eyebrow"
           value={home.india.eyebrow}
           onChange={(v) =>
             setHome((p) => ({ ...p, india: { ...p.india, eyebrow: v } }))
           }
         />
         <Field
-          label="Title"
+          label="India title"
           value={home.india.title}
           onChange={(v) =>
             setHome((p) => ({ ...p, india: { ...p.india, title: v } }))
@@ -388,7 +508,7 @@ export default function SiteSettingsEditor({
         />
         <div className="md:col-span-2">
           <Field
-            label="Description"
+            label="India description"
             value={home.india.description}
             onChange={(v) =>
               setHome((p) => ({ ...p, india: { ...p.india, description: v } }))
@@ -398,13 +518,18 @@ export default function SiteSettingsEditor({
         </div>
       </Section>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg font-bold">Things to do cards</h2>
+      <Section
+        id="stories"
+        title="Things to do cards"
+        description="Experience tiles with image, tag and link."
+        icon={Sparkles}
+        grid={false}
+        actions={
           <Button
             type="button"
             variant="outline"
             size="sm"
+            className="border-slate-200 bg-white"
             onClick={() =>
               setHome((p) => ({
                 ...p,
@@ -427,8 +552,9 @@ export default function SiteSettingsEditor({
           >
             <Plus className="h-4 w-4" /> Add card
           </Button>
-        </div>
-        <div className="mb-4 grid gap-4 md:grid-cols-2">
+        }
+      >
+        <div className="grid gap-4 md:grid-cols-2">
           <Field
             label="Section eyebrow"
             value={home.thingsToDo.eyebrow}
@@ -450,11 +576,11 @@ export default function SiteSettingsEditor({
             }
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {home.thingsToDo.items.map((item, index) => (
             <div
               key={item.id}
-              className="grid gap-3 rounded-xl border border-border bg-surface p-4 md:grid-cols-2"
+              className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 md:grid-cols-2"
             >
               <Field
                 label="Tag"
@@ -481,6 +607,7 @@ export default function SiteSettingsEditor({
                   type="button"
                   variant="outline"
                   size="sm"
+                  className="border-red-200 text-red-600 hover:border-red-300 hover:text-red-700"
                   onClick={() =>
                     setHome((p) => ({
                       ...p,
@@ -497,15 +624,19 @@ export default function SiteSettingsEditor({
             </div>
           ))}
         </div>
-      </section>
+      </Section>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg font-bold">Get inspired stories</h2>
+      <Section
+        title="Get inspired stories"
+        description="Featured inspiration grid on the homepage."
+        icon={MessageSquareQuote}
+        grid={false}
+        actions={
           <Button
             type="button"
             variant="outline"
             size="sm"
+            className="border-slate-200 bg-white"
             onClick={() =>
               setHome((p) => ({
                 ...p,
@@ -528,8 +659,9 @@ export default function SiteSettingsEditor({
           >
             <Plus className="h-4 w-4" /> Add story
           </Button>
-        </div>
-        <div className="mb-4 grid gap-4 md:grid-cols-2">
+        }
+      >
+        <div className="grid gap-4 md:grid-cols-2">
           <Field
             label="Section eyebrow"
             value={home.getInspired.eyebrow}
@@ -551,11 +683,11 @@ export default function SiteSettingsEditor({
             }
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {home.getInspired.stories.map((story, index) => (
             <div
               key={story.id}
-              className="grid gap-3 rounded-xl border border-border bg-surface p-4 md:grid-cols-2"
+              className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 md:grid-cols-2"
             >
               <Field
                 label="Tag"
@@ -572,9 +704,10 @@ export default function SiteSettingsEditor({
                 value={story.href}
                 onChange={(v) => updateStory(index, { href: v })}
               />
-              <label className="flex items-center gap-2 text-sm font-semibold">
+              <label className="flex items-center gap-2 self-end rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700">
                 <input
                   type="checkbox"
+                  className="h-4 w-4 accent-[var(--brand)]"
                   checked={Boolean(story.featured)}
                   onChange={(e) =>
                     updateStory(index, { featured: e.target.checked })
@@ -594,6 +727,7 @@ export default function SiteSettingsEditor({
                   type="button"
                   variant="outline"
                   size="sm"
+                  className="border-red-200 text-red-600 hover:border-red-300 hover:text-red-700"
                   onClick={() =>
                     setHome((p) => ({
                       ...p,
@@ -612,9 +746,13 @@ export default function SiteSettingsEditor({
             </div>
           ))}
         </div>
-      </section>
+      </Section>
 
-      <Section title="Enquiry / quote section">
+      <Section
+        title="Enquiry / quote section"
+        description="Copy next to the free quote form."
+        icon={Newspaper}
+      >
         <Field
           label="Eyebrow"
           value={home.enquiry.eyebrow}
@@ -660,7 +798,11 @@ export default function SiteSettingsEditor({
         </div>
       </Section>
 
-      <Section title="Customize trip CTA">
+      <Section
+        title="Customize trip CTA"
+        description="DIY holiday banner above Why Choose Us."
+        icon={Sparkles}
+      >
         <Field
           label="Eyebrow"
           value={home.customizeCta.eyebrow}
@@ -696,7 +838,7 @@ export default function SiteSettingsEditor({
         </div>
       </Section>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+      <section className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_0_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(15,23,42,0.18)]">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-bold">Why choose us</h2>
           <Button
@@ -832,7 +974,7 @@ export default function SiteSettingsEditor({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+      <section className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_0_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(15,23,42,0.18)]">
         <h2 className="mb-4 text-lg font-bold">Trust stats</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {home.trustStats.map((stat, index) => (
@@ -867,7 +1009,7 @@ export default function SiteSettingsEditor({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+      <section className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_0_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(15,23,42,0.18)]">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-bold">Home services cards</h2>
           <Button
@@ -1031,7 +1173,7 @@ export default function SiteSettingsEditor({
         </div>
       </Section>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+      <section className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_0_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(15,23,42,0.18)]">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-bold">Testimonials</h2>
           <Button
@@ -1184,7 +1326,11 @@ export default function SiteSettingsEditor({
         </div>
       </section>
 
-      <Section title="Bottom CTA">
+      <Section
+        title="Bottom CTA"
+        description="Final conversion band near the footer."
+        icon={Sparkles}
+      >
         <ImageField
           label="Background image"
           value={home.bottomCta.image}
@@ -1220,7 +1366,12 @@ export default function SiteSettingsEditor({
         </div>
       </Section>
 
-      <Section title="Newsletter">
+      <Section
+        id="reviews"
+        title="Newsletter"
+        description="Subscribe strip at the bottom of the homepage."
+        icon={Newspaper}
+      >
         <Field
           label="Title"
           value={home.newsletter.title}
@@ -1244,10 +1395,15 @@ export default function SiteSettingsEditor({
         />
       </Section>
 
-      <div className="sticky bottom-4 z-10 flex justify-end">
-        <Button type="submit" size="lg" disabled={saving}>
-          {saving ? "Saving..." : "Save all changes"}
-        </Button>
+      <div className="pointer-events-none sticky bottom-4 z-20 flex justify-center">
+        <div className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/90 px-3 py-2.5 shadow-[0_16px_40px_-18px_rgba(15,23,42,0.45)] backdrop-blur-md">
+          <p className="hidden px-2 text-xs font-medium text-slate-500 sm:block">
+            Changes apply live after save
+          </p>
+          <Button type="submit" size="md" disabled={saving}>
+            {saving ? "Saving..." : "Save all changes"}
+          </Button>
+        </div>
       </div>
     </form>
   );

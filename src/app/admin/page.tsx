@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ArrowUpRight, Shield } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getSiteSettings } from "@/lib/site-settings";
@@ -39,27 +40,32 @@ export default async function AdminPage() {
     ]);
 
   return (
-    <div className="min-h-screen bg-[#f4f6f9]">
-      <div className="border-b border-stone-200 bg-white">
-        <div className="container-page flex flex-wrap items-center justify-between gap-3 py-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+    <div className="admin-shell min-h-screen">
+      <div className="border-b border-white/10 bg-[#0f274d] text-white">
+        <div className="container-page flex flex-wrap items-center justify-between gap-4 py-5 md:py-6">
+          <div className="min-w-0">
+            <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-200/90">
+              <Shield className="h-3.5 w-3.5" />
               Yogo Voyage · Superadmin
             </p>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="mt-1.5 text-2xl font-bold tracking-tight md:text-3xl">
               Content & pricing control
             </h1>
+            <p className="mt-1 text-sm text-slate-300">
+              Signed in as {session.name || session.email}
+            </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
               href="/"
-              className="rounded-xl border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground hover:border-brand hover:text-brand"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               View website
+              <ArrowUpRight className="h-4 w-4" />
             </Link>
             <Link
               href="/account"
-              className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
+              className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:bg-sky-50"
             >
               My account
             </Link>

@@ -410,8 +410,14 @@ export default function AdminClient({
   ];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-      <aside className="h-fit rounded-2xl border border-stone-200 bg-white p-3 shadow-sm">
+    <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+      <aside className="h-fit overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-2.5 shadow-[0_12px_32px_-18px_rgba(15,23,42,0.25)] lg:sticky lg:top-6">
+        <div className="mb-2 rounded-xl bg-gradient-to-br from-[#0f274d] to-brand px-3.5 py-3 text-white">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-sky-200/90">
+            Control centre
+          </p>
+          <p className="mt-0.5 text-sm font-semibold">Manage site content</p>
+        </div>
         <nav className="space-y-1">
           {nav.map((item) => {
             const Icon = item.icon;
@@ -426,11 +432,18 @@ export default function AdminClient({
                 className={cn(
                   "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition",
                   tab === item.id
-                    ? "bg-brand text-white"
-                    : "text-stone-700 hover:bg-brand-soft hover:text-brand",
+                    ? "bg-brand text-white shadow-sm shadow-brand/25"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-brand",
                 )}
               >
-                <Icon className="h-4 w-4" />
+                <span
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-lg",
+                    tab === item.id ? "bg-white/15" : "bg-slate-100 text-slate-500",
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                </span>
                 {item.label}
               </button>
             );
@@ -440,7 +453,7 @@ export default function AdminClient({
 
       <div className="min-w-0 space-y-5">
         {toast ? (
-          <div className="rounded-xl border border-brand/20 bg-brand-soft px-4 py-3 text-sm font-medium text-brand">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 shadow-sm">
             {toast}
           </div>
         ) : null}
@@ -459,12 +472,12 @@ export default function AdminClient({
               ].map((card) => (
                 <div
                   key={card.label}
-                  className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
+                  className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_12px_28px_-20px_rgba(15,23,42,0.35)]"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                     {card.label}
                   </p>
-                  <p className="mt-2 text-3xl font-bold text-foreground">
+                  <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
                     {card.value}
                   </p>
                 </div>
@@ -472,9 +485,9 @@ export default function AdminClient({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_12px_28px_-20px_rgba(15,23,42,0.35)]">
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-bold">Quick actions</h2>
+                  <h2 className="text-lg font-bold tracking-tight">Quick actions</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button type="button" onClick={openCreateDest}>
@@ -499,16 +512,16 @@ export default function AdminClient({
                   </Button>
                 </div>
               </div>
-              <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-                <h2 className="mb-3 text-lg font-bold">Recent packages</h2>
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_12px_28px_-20px_rgba(15,23,42,0.35)]">
+                <h2 className="mb-3 text-lg font-bold tracking-tight">Recent packages</h2>
                 <ul className="space-y-2">
                   {packages.slice(0, 5).map((p) => (
                     <li
                       key={p.id}
-                      className="flex items-center justify-between gap-3 rounded-xl bg-surface px-3 py-2 text-sm"
+                      className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm"
                     >
-                      <span className="truncate font-medium">{p.name}</span>
-                      <span className="shrink-0 text-muted">
+                      <span className="truncate font-medium text-slate-800">{p.name}</span>
+                      <span className="shrink-0 font-semibold text-brand">
                         {formatPrice(p.startingPrice)}
                       </span>
                     </li>
